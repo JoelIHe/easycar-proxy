@@ -32,7 +32,7 @@ app.post("/proxy", async (req, res) => {
     }
 });
 
-// Puerto para Render
+// Puerto para Rensder
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Proxy corriendo en http://localhost:${PORT}`);
