@@ -3,13 +3,15 @@ const fetch = require("node-fetch");
 const cors = require("cors");
 
 const app = express();
+
+// Middleware para RAW TEXT (IMPORTANTE)
+app.use(express.text({ type: "*/*" }));
+
 app.use(cors());
-app.use(express.json());
 
-// URL de tu ASMX
-const SOAP_URL = "https://gestintsoa.runasp.net/WS_Vehiculo.asmx";
+// URL del servicio ASMX REAL
+const SOAP_URL = "http://gestintsoa.runasp.net/WS_Vehiculo.asmx";
 
-// Ruta proxy
 app.post("/proxy", async (req, res) => {
   try {
     const soapResponse = await fetch(SOAP_URL, {
@@ -18,10 +20,11 @@ app.post("/proxy", async (req, res) => {
         "Content-Type": "text/xml; charset=utf-8",
         "SOAPAction": "http://rentaautos.ec/gestion/obtenerVehiculos"
       },
-      body: req.body
+      body: req.body  // <= AQUÍ ENVIAMOS EL XML CRUDO
     });
 
     const result = await soapResponse.text();
+
     res.set("Content-Type", "text/xml");
     res.send(result);
 
@@ -31,7 +34,7 @@ app.post("/proxy", async (req, res) => {
   }
 });
 
-// Puerto Render:
+// Puerto Render
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Proxy corriendo en http://localhost:${PORT}`);
